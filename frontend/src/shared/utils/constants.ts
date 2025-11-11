@@ -1,0 +1,21 @@
+export const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3010/api';
+
+export const ROUTES = {
+  HOME: '/',
+  DASHBOARD: '/dashboard',
+  CANDIDATES: '/candidates',
+  CANDIDATES_NEW: '/candidates/new',
+  CANDIDATES_DETAIL: '/candidates/:id',
+} as const;
+
+export const HTTP_STATUS = {
+  OK: 200,
+  CREATED: 201,
+  BAD_REQUEST: 400,
+  UNAUTHORIZED: 401,
+  FORBIDDEN: 403,
+  NOT_FOUND: 404,
+  CONFLICT: 409,
+  UNPROCESSABLE_ENTITY: 422,
+  INTERNAL_SERVER_ERROR: 500,
+} as const;

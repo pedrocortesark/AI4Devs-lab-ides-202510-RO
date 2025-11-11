@@ -1,8 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// Prisma Schema for LTI ATS
+// PostgreSQL 16.x + Prisma 5.x
 
 generator client {
   provider = "prisma-client-js"
@@ -13,8 +10,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+// Health check model (minimal for testing DB connection)
+model HealthCheck {
+  id        String   @id @default(uuid())
+  status    String
+  timestamp DateTime @default(now())
+
+  @@map("health_checks")
 }

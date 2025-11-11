@@ -1,12 +1,32 @@
-version: "3.1"
+version: '3.9'
 
 services:
   db:
-    image: postgres
-    restart: always
+    image: postgres:16-alpine
+    container_name: lti-postgres
+    restart: unless-stopped
     environment:
-      POSTGRES_PASSWORD: D1ymf8wyQEGthFR1E9xhCq
       POSTGRES_USER: LTIdbUser
+      POSTGRES_PASSWORD: D1ymf8wyQEGthFR1E9xhCq
       POSTGRES_DB: LTIdb
+      POSTGRES_INITDB_ARGS: "-E UTF8"
+      TZ: "UTC"
     ports:
-      - 5432:5432
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U LTIdbUser -d LTIdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - lti-network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  lti-network:
+    driver: bridge

@@ -1,0 +1,63 @@
+{
+    "name": "lti-ats",
+    "version": "1.0.0",
+    "description": "LTI - Applicant Tracking System with Domain-Driven Design",
+    "private": true,
+    "scripts": {
+        "bootstrap": "node scripts/bootstrap.js",
+        "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+        "dev:backend": "cd backend && npm run dev",
+        "dev:frontend": "cd frontend && npm start",
+        "build": "npm run build:backend && npm run build:frontend",
+        "build:backend": "cd backend && npm run build",
+        "build:frontend": "cd frontend && npm run build",
+        "test": "npm run test:backend && npm run test:frontend",
+        "test:backend": "cd backend && npm test",
+        "test:frontend": "cd frontend && npm test -- --watchAll=false",
+        "test:coverage": "npm run test:coverage:backend && npm run test:coverage:frontend",
+        "test:coverage:backend": "cd backend && npm run test:coverage",
+        "test:coverage:frontend": "cd frontend && npm run test:coverage",
+        "lint": "npm run lint:backend && npm run lint:frontend",
+        "lint:backend": "cd backend && npm run lint",
+        "lint:frontend": "cd frontend && npm run lint",
+        "format": "npm run format:backend && npm run format:frontend",
+        "format:backend": "cd backend && npm run format",
+        "format:frontend": "cd frontend && npm run format",
+        "clean": "npm run clean:backend && npm run clean:frontend",
+        "clean:backend": "cd backend && rimraf node_modules dist",
+        "clean:frontend": "cd frontend && rimraf node_modules build",
+        "db:up": "docker compose up -d",
+        "db:down": "docker compose down",
+        "db:reset": "docker compose down -v && docker compose up -d",
+        "db:logs": "docker compose logs -f postgres",
+        "prisma:generate": "cd backend && npx prisma generate",
+        "prisma:migrate": "cd backend && npx prisma migrate dev",
+        "prisma:studio": "cd backend && npx prisma studio",
+        "health": "node scripts/health-check.js"
+    },
+    "workspaces": [
+        "backend",
+        "frontend"
+    ],
+    "devDependencies": {
+        "concurrently": "^8.2.2",
+        "rimraf": "^5.0.5"
+    },
+    "engines": {
+        "node": ">=20.0.0",
+        "npm": ">=10.0.0"
+    },
+    "keywords": [
+        "ats",
+        "applicant-tracking-system",
+        "ddd",
+        "tdd",
+        "typescript",
+        "express",
+        "react",
+        "postgresql",
+        "prisma"
+    ],
+    "author": "LTI Team",
+    "license": "ISC"
+}
