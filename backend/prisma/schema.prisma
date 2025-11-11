@@ -18,3 +18,108 @@ model HealthCheck {
 
   @@map("health_checks")
 }
+
+// ============================================
+// CANDIDATE DOMAIN
+// ============================================
+
+// Document types for candidates
+enum DocumentKind {
+  CV
+  COVER_LETTER
+  PORTFOLIO
+}
+
+// Main candidate entity
+model Candidate {
+  id        String   @id @default(uuid())
+  firstName String   @map("first_name")
+  lastName  String   @map("last_name")
+  email     String   @unique // Application normalizes to lowercase before saving
+  phone     String?  // E.164 format recommended
+  
+  // Granular address fields
+  addressLine1 String? @map("address_line1")
+  addressLine2 String? @map("address_line2")
+  city         String?
+  state        String?
+  postalCode   String? @map("postal_code")
+  country      String?
+  
+  // Soft delete flag
+  isDeleted Boolean  @default(false) @map("is_deleted")
+  
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  
+  // Relations
+  education  CandidateEducation[]
+  experience CandidateExperience[]
+  documents  CandidateDocument[]
+  
+  @@map("candidates")
+  @@index([email])
+  @@index([isDeleted])
+}
+
+// Education history for candidates
+model CandidateEducation {
+  id           String    @id @default(uuid())
+  candidateId  String    @map("candidate_id")
+  institution  String    // Required: University/School name
+  degree       String?   // e.g., "Bachelor of Science", "Master"
+  fieldOfStudy String?   @map("field_of_study") // e.g., "Computer Science"
+  startYear    Int?      @map("start_year")
+  endYear      Int?      @map("end_year")
+  
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  
+  // Relations
+  candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  
+  @@map("candidate_education")
+  @@index([candidateId])
+}
+
+// Work experience for candidates
+model CandidateExperience {
+  id          String    @id @default(uuid())
+  candidateId String    @map("candidate_id")
+  company     String    // Required: Company name
+  title       String    // Required: Job title
+  description String?   @db.Text
+  startDate   DateTime? @map("start_date")
+  endDate     DateTime? @map("end_date")
+  
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  
+  // Relations
+  candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  
+  @@map("candidate_experience")
+  @@index([candidateId])
+}
+
+// Documents associated with candidates (CV, cover letters, portfolios)
+model CandidateDocument {
+  id           String       @id @default(uuid())
+  candidateId  String       @map("candidate_id")
+  documentKind DocumentKind @map("document_kind")
+  filePath     String       @map("file_path") // Local path: ./uploads/cv/{candidateId}/{guid}.pdf
+  fileName     String       @map("file_name") // Original filename
+  fileSize     Int          @map("file_size") // Size in bytes
+  mimeType     String       @map("mime_type") // e.g., "application/pdf"
+  
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  
+  // Relations
+  candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  
+  @@map("candidate_documents")
+  @@index([candidateId])
+  @@index([documentKind])
+}
