@@ -1,9 +1,15 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useI18n } from '../../../shared/hooks/useI18n';
 import './Dashboard.css';
 
 export const Dashboard: React.FC = () => {
   const { t, language, changeLanguage } = useI18n();
+  const navigate = useNavigate();
+
+  const handleAddCandidate = () => {
+    navigate('/candidates/new');
+  };
 
   return (
     <div className="dashboard">
@@ -30,7 +36,9 @@ export const Dashboard: React.FC = () => {
       </div>
 
       <div className="dashboard-actions">
-        <button className="btn btn-primary">{t('dashboard.addCandidate')}</button>
+        <button className="btn btn-primary" onClick={handleAddCandidate}>
+          {t('dashboard.addCandidate')}
+        </button>
       </div>
 
       <div className="dashboard-content">
