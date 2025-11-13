@@ -5,8 +5,8 @@ export const educationSchema = z.object({
     institution: z.string().min(1, 'Institution is required').max(255),
     degree: z.string().min(1, 'Degree is required').max(255),
     fieldOfStudy: z.string().max(255).optional(),
-    startDate: z.string().datetime('Invalid date format'),
-    endDate: z.string().datetime('Invalid date format').optional(),
+    startDate: z.string().refine((date) => !isNaN(Date.parse(date)), 'Invalid date format'),
+    endDate: z.string().refine((date) => !date || !isNaN(Date.parse(date)), 'Invalid date format').optional(),
     current: z.boolean().default(false),
 });
 
@@ -15,8 +15,8 @@ export const workExperienceSchema = z.object({
     company: z.string().min(1, 'Company is required').max(255),
     position: z.string().min(1, 'Position is required').max(255),
     description: z.string().optional(),
-    startDate: z.string().datetime('Invalid date format'),
-    endDate: z.string().datetime('Invalid date format').optional(),
+    startDate: z.string().refine((date) => !isNaN(Date.parse(date)), 'Invalid date format'),
+    endDate: z.string().refine((date) => !date || !isNaN(Date.parse(date)), 'Invalid date format').optional(),
     current: z.boolean().default(false),
 });
 
