@@ -27,3 +27,8 @@ yarn-error.log*
 
 # .env
 
+# Uploaded files (keep directory structure)
+backend/uploads/cv/*
+!backend/uploads/cv/.gitkeep
+
+
