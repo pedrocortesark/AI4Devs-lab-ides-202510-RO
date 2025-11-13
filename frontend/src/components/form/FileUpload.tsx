@@ -141,8 +141,10 @@ const FileUpload: React.FC<FileUploadProps> = ({
                 tabIndex={0}
                 aria-labelledby="cv-upload-label"
                 aria-describedby={error ? "cv-upload-error" : undefined}
-                onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
+                onKeyDown={(e) =>
+                {
+                    if (e.key === 'Enter' || e.key === ' ')
+                    {
                         e.preventDefault();
                         handleClick();
                     }
