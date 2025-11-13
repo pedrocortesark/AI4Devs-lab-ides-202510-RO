@@ -20,13 +20,6 @@ const Dashboard: React.FC = () =>
                         <span className="btn-icon">+</span>
                         Añadir Candidato
                     </button>
-
-                    <button
-                        className="btn-secondary"
-                        onClick={() => navigate('/candidates')}
-                    >
-                        Ver Candidatos
-                    </button>
                 </div>
 
                 <div className="dashboard-stats">

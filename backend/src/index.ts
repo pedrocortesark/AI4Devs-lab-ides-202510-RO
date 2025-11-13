@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import express from 'express';
+import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
 import dotenv from 'dotenv';
 import candidateRoutes from './routes/candidateRoutes';
@@ -13,6 +14,10 @@ export default prisma;
 const port = 3010;
 
 // Middleware
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
