@@ -54,25 +54,32 @@ export class CandidateService
     /**
      * Find all candidates (summary view without relations)
      */
-    static async findAll()
+    static async findAll(page: number = 1, limit: number = 10)
     {
-        const candidates = await prisma.candidate.findMany({
-            orderBy: { createdAt: 'desc' },
-            select: {
-                id: true,
-                firstName: true,
-                lastName: true,
-                email: true,
-                phone: true,
-                address: true,
-                createdAt: true,
-                updatedAt: true
-            }
-        });
+        const skip = (page - 1) * limit;
+
+        const [candidates, total] = await Promise.all([
+            prisma.candidate.findMany({
+                skip,
+                take: limit,
+                orderBy: { createdAt: 'desc' },
+                select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    email: true,
+                    phone: true,
+                    address: true,
+                    createdAt: true,
+                    updatedAt: true
+                }
+            }),
+            prisma.candidate.count()
+        ]);
 
         return {
             candidates,
-            total: candidates.length
+            total
         };
     }
 

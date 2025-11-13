@@ -1,0 +1,43 @@
+import React from 'react';
+import './TextInput.css';
+
+interface TextAreaProps
+{
+    label: string;
+    name: string;
+    placeholder?: string;
+    error?: string;
+    register: any;
+    required?: boolean;
+    rows?: number;
+}
+
+const TextArea: React.FC<TextAreaProps> = ({
+    label,
+    name,
+    placeholder,
+    error,
+    register,
+    required = false,
+    rows = 4,
+}) =>
+{
+    return (
+        <div className="form-field">
+            <label htmlFor={name} className="form-label">
+                {label}
+                {required && <span className="required-mark">*</span>}
+            </label>
+            <textarea
+                id={name}
+                rows={rows}
+                className={`form-textarea ${error ? 'input-error' : ''}`}
+                placeholder={placeholder}
+                {...register}
+            />
+            {error && <span className="error-message">{error}</span>}
+        </div>
+    );
+};
+
+export default TextArea;
