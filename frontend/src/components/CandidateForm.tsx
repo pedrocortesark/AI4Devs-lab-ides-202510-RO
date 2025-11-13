@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import TextInput from './form/TextInput';
 import TextArea from './form/TextArea';
+import FileUpload from './form/FileUpload';
 import './CandidateForm.css';
 
 // Validation schema
@@ -19,12 +20,14 @@ type CandidateFormData = z.infer<typeof candidateSchema>;
 
 interface CandidateFormProps
 {
-    onSubmit: (data: CandidateFormData) => Promise<void>;
+    onSubmit: (data: CandidateFormData, cvFile: File | null) => Promise<void>;
     isLoading?: boolean;
 }
 
 const CandidateForm: React.FC<CandidateFormProps> = ({ onSubmit, isLoading = false }) =>
 {
+    const [cvFile, setCvFile] = useState<File | null>(null);
+
     const {
         register,
         handleSubmit,
@@ -33,8 +36,13 @@ const CandidateForm: React.FC<CandidateFormProps> = ({ onSubmit, isLoading = fal
         resolver: zodResolver(candidateSchema),
     });
 
+    const handleFormSubmit = async (data: CandidateFormData) =>
+    {
+        await onSubmit(data, cvFile);
+    };
+
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="candidate-form">
+        <form onSubmit={handleSubmit(handleFormSubmit)} className="candidate-form">
             <div className="form-section">
                 <h2 className="section-title">Información Personal</h2>
 
@@ -84,6 +92,12 @@ const CandidateForm: React.FC<CandidateFormProps> = ({ onSubmit, isLoading = fal
                     register={register('address')}
                     error={errors.address?.message}
                     rows={3}
+                />
+
+                <FileUpload
+                    onFileSelect={setCvFile}
+                    accept=".pdf,.doc,.docx"
+                    maxSizeMB={10}
                 />
             </div>
 

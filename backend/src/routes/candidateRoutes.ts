@@ -3,6 +3,7 @@ import { CandidateService } from '../services/CandidateService';
 import { validateRequest } from '../middleware/validateRequest';
 import { createCandidateSchema } from '../types/candidate';
 import { createErrorResponse } from '../utils/errorResponse';
+import { uploadCV } from '../middleware/upload';
 
 const router = Router();
 
@@ -120,6 +121,82 @@ router.get(
                 createErrorResponse(
                     'INTERNAL_ERROR',
                     'An error occurred while fetching candidates'
+                )
+            );
+        }
+    }
+);
+
+/**
+ * POST /api/candidates/:id/cv
+ * Upload CV document for a candidate
+ */
+router.post(
+    '/:id/cv',
+    uploadCV.single('cv'),
+    async (req: Request, res: Response, next: NextFunction) =>
+    {
+        try
+        {
+            const { id } = req.params;
+
+            if (!req.file)
+            {
+                return res.status(400).json(
+                    createErrorResponse(
+                        'VALIDATION_ERROR',
+                        'No file uploaded'
+                    )
+                );
+            }
+
+            // Check if candidate exists
+            const candidate = await CandidateService.findById(id);
+            if (!candidate)
+            {
+                return res.status(404).json(
+                    createErrorResponse(
+                        'NOT_FOUND',
+                        'Candidate not found'
+                    )
+                );
+            }
+
+            const cvDocument = await CandidateService.uploadCV(id, req.file);
+
+            res.status(201).json({
+                success: true,
+                data: cvDocument,
+            });
+        } catch (error: any)
+        {
+            console.error('Error uploading CV:', error);
+
+            // Handle Multer errors
+            if (error.message?.includes('Invalid file type'))
+            {
+                return res.status(400).json(
+                    createErrorResponse(
+                        'VALIDATION_ERROR',
+                        error.message
+                    )
+                );
+            }
+
+            if (error.message?.includes('File too large'))
+            {
+                return res.status(400).json(
+                    createErrorResponse(
+                        'VALIDATION_ERROR',
+                        'File size exceeds 10MB limit'
+                    )
+                );
+            }
+
+            return res.status(500).json(
+                createErrorResponse(
+                    'INTERNAL_ERROR',
+                    'An error occurred while uploading the CV'
                 )
             );
         }

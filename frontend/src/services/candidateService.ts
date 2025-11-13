@@ -68,6 +68,29 @@ class CandidateService
             total: result.pagination.total,
         };
     }
+
+    /**
+     * Upload CV for a candidate
+     */
+    async uploadCV(candidateId: string, file: File): Promise<any>
+    {
+        const formData = new FormData();
+        formData.append('cv', file);
+
+        const response = await fetch(`${API_BASE_URL}/candidates/${candidateId}/cv`, {
+            method: 'POST',
+            body: formData,
+        });
+
+        if (!response.ok)
+        {
+            const error: APIError = await response.json();
+            throw new Error(error.error.message || 'Error al subir el CV');
+        }
+
+        const result = await response.json();
+        return result.data;
+    }
 }
 
 const candidateService = new CandidateService();

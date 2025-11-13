@@ -11,14 +11,32 @@ const AddCandidatePage: React.FC = () =>
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState(false);
 
-    const handleSubmit = async (data: any) =>
+    const handleSubmit = async (data: any, cvFile: File | null) =>
     {
         try
         {
             setIsLoading(true);
             setError(null);
 
-            await candidateService.createCandidate(data);
+            // Create candidate first
+            const candidate = await candidateService.createCandidate(data);
+
+            // Upload CV if provided
+            if (cvFile && candidate.id)
+            {
+                try
+                {
+                    await candidateService.uploadCV(candidate.id, cvFile);
+                }
+                catch (cvError: any)
+                {
+                    // Log CV upload error but don't fail the whole operation
+                    console.error('Error uploading CV:', cvError);
+                    setError(`Candidato creado, pero hubo un error al subir el CV: ${cvError.message}`);
+                    setIsLoading(false);
+                    return;
+                }
+            }
 
             setSuccess(true);
 
