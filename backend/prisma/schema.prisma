@@ -18,3 +18,75 @@ model User {
   email String  @unique
   name  String?
 }
+
+model Candidate {
+  id               String   @id @default(uuid())
+  firstName        String   @db.VarChar(100)
+  lastName         String   @db.VarChar(100)
+  email            String   @unique @db.VarChar(255)
+  phone            String?  @db.VarChar(50)
+  address          String?  @db.VarChar(500)
+  
+  // Relations
+  educations       Education[]
+  workExperiences  WorkExperience[]
+  cvDocument       CVDocument?
+  
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  
+  @@map("candidates")
+  @@index([email])
+}
+
+model Education {
+  id           String    @id @default(uuid())
+  candidateId  String
+  candidate    Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  
+  institution  String    @db.VarChar(255)
+  degree       String    @db.VarChar(255)
+  fieldOfStudy String?   @db.VarChar(255)
+  startDate    DateTime
+  endDate      DateTime?
+  current      Boolean   @default(false)
+  
+  createdAt    DateTime  @default(now())
+  
+  @@map("education")
+  @@index([candidateId])
+}
+
+model WorkExperience {
+  id          String    @id @default(uuid())
+  candidateId String
+  candidate   Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  
+  company     String    @db.VarChar(255)
+  position    String    @db.VarChar(255)
+  description String?   @db.Text
+  startDate   DateTime
+  endDate     DateTime?
+  current     Boolean   @default(false)
+  
+  createdAt   DateTime  @default(now())
+  
+  @@map("work_experience")
+  @@index([candidateId])
+}
+
+model CVDocument {
+  id           String    @id @default(uuid())
+  candidateId  String    @unique
+  candidate    Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  
+  filename     String    @db.VarChar(255)
+  originalName String    @db.VarChar(255)
+  mimeType     String    @db.VarChar(100)
+  sizeBytes    Int
+  storagePath  String    @db.VarChar(500)
+  uploadedAt   DateTime  @default(now())
+  
+  @@map("cv_documents")
+  @@index([candidateId])
+}
