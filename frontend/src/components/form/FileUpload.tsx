@@ -125,7 +125,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
 
     return (
         <div className="file-upload-wrapper">
-            <label className="form-label">
+            <label className="form-label" id="cv-upload-label">
                 Curriculum Vitae (CV)
                 <span className="form-hint"> - Opcional</span>
             </label>
@@ -137,6 +137,16 @@ const FileUpload: React.FC<FileUploadProps> = ({
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
                 onClick={handleClick}
+                role="button"
+                tabIndex={0}
+                aria-labelledby="cv-upload-label"
+                aria-describedby={error ? "cv-upload-error" : undefined}
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleClick();
+                    }
+                }}
             >
                 <input
                     ref={fileInputRef}
@@ -176,7 +186,11 @@ const FileUpload: React.FC<FileUploadProps> = ({
                 )}
             </div>
 
-            {error && <span className="error-message">{error}</span>}
+            {error && (
+                <span id="cv-upload-error" className="error-message" role="alert">
+                    {error}
+                </span>
+            )}
         </div>
     );
 };

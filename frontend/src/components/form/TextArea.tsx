@@ -26,16 +26,23 @@ const TextArea: React.FC<TextAreaProps> = ({
         <div className="form-field">
             <label htmlFor={name} className="form-label">
                 {label}
-                {required && <span className="required-mark">*</span>}
+                {required && <span className="required-mark" aria-label="required">*</span>}
             </label>
             <textarea
                 id={name}
                 rows={rows}
                 className={`form-textarea ${error ? 'input-error' : ''}`}
                 placeholder={placeholder}
+                aria-required={required}
+                aria-invalid={!!error}
+                aria-describedby={error ? `${name}-error` : undefined}
                 {...register}
             />
-            {error && <span className="error-message">{error}</span>}
+            {error && (
+                <span id={`${name}-error`} className="error-message" role="alert">
+                    {error}
+                </span>
+            )}
         </div>
     );
 };
