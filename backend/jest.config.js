@@ -5,4 +5,7 @@ module.exports = {
   },
   testRegex: '(/tests/.*|(\\.|/)(test|spec))\\.tsx?$',
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+  transformIgnorePatterns: [
+    'node_modules/(?!(uuid)/)',
+  ],
 };

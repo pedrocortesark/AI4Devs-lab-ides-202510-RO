@@ -88,7 +88,7 @@ export class CandidateService
      */
     static async uploadCV(candidateId: string, file: Express.Multer.File)
     {
-        return await prisma.cvDocument.create({
+        return await prisma.cVDocument.create({
             data: {
                 candidateId,
                 filename: file.filename,
